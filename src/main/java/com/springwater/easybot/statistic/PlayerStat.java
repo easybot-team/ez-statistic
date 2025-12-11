@@ -6,10 +6,9 @@ import com.jayway.jsonpath.PathNotFoundException;
 import com.springwater.easybot.statistic.adapter.EasyBotBukkitAdapter;
 import com.springwater.easybot.statistic.api.IPlayerStat;
 import com.springwater.easybot.statistic.api.IUuidNameCache;
+import com.springwater.easybot.statistic.logger.ILogger;
 import com.springwater.easybot.statistic.utils.MojangUUIDFetcher;
 import com.springwater.easybot.statistic.utils.StringFormatUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +24,7 @@ public class PlayerStat implements IPlayerStat {
     private String filePath;
     private final Path statsDirectory;
     private DocumentContext context;
-    private final Logger logger = LoggerFactory.getLogger(PlayerStat.class);
+    private final ILogger logger = StatisticManager.getInstance().getLogger();
     private final IUuidNameCache cacheDb = StatisticManager.getInstance().getStatDb();
 
     public PlayerStat(String uuidOrName, Path statsDirectory) {
@@ -43,9 +42,7 @@ public class PlayerStat implements IPlayerStat {
             return;
         }
         // 获取缓存 UUID
-        String cachedUuidStr = cacheDb.getUuidCache(this.uuidOrName)
-                .orElse(EMPTY_UUID)
-                .toString();
+        String cachedUuidStr = cacheDb.getUuidCache(this.uuidOrName).orElse(EMPTY_UUID).toString();
         if (tryLoadContext(Paths.get("cache", cachedUuidStr + ".json"))) {
             return;
         }
@@ -74,15 +71,15 @@ public class PlayerStat implements IPlayerStat {
                     return;
                 }
             } else {
-                logger.error("玩家 {} 的正版 UUID 未找到", this.uuidOrName);
+                logger.error("玩家 " + this.uuidOrName + " 的正版 UUID 未找到");
             }
         } catch (Exception e) {
             // 捕获获取 UUID 过程中的潜在网络异常，防止中断流程
-            logger.error("获取玩家 {} 在线 UUID 时发生错误", this.uuidOrName, e);
+            logger.error("获取玩家 " + this.uuidOrName + " 在线 UUID 时发生错误: ", e);
         }
 
         // 全部失败
-        logger.error("未能加载玩家 {} 的数据 (路径: {})", this.uuidOrName, this.filePath);
+        logger.error("未能加载玩家 " + this.uuidOrName + " 的数据 (路径: " + this.filePath + ")");
         this.context = null;
     }
 
@@ -101,7 +98,7 @@ public class PlayerStat implements IPlayerStat {
             this.filePath = path.toString();
             return true;
         } catch (IOException e) {
-            logger.error("读取文件失败: {}", path, e);
+            logger.error("读取文件失败: " + path, e);
             return false;
         }
     }

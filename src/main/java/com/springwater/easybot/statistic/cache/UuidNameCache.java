@@ -1,9 +1,9 @@
 package com.springwater.easybot.statistic.cache;
 
+import com.springwater.easybot.statistic.StatisticManager;
+import com.springwater.easybot.statistic.logger.ILogger;
 import lombok.Getter;
 import com.springwater.easybot.statistic.api.IUuidNameCache;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class UuidNameCache implements IUuidNameCache {
     @Getter
     private final String savePath;
-    private static final Logger logger = LoggerFactory.getLogger(UuidNameCache.class);
+    private static final ILogger logger = StatisticManager.getInstance().getLogger();
     private final Map<String, UUID> memoryCache = new ConcurrentHashMap<>();
 
     public UuidNameCache(String savePath) {
@@ -62,7 +62,7 @@ public class UuidNameCache implements IUuidNameCache {
             // 直接将 UUID 字符串写入文件，文件内容就是 UUID
             Files.writeString(filePath, uuid.toString());
         } catch (IOException e) {
-            logger.warn("Error saving UUID to disk: {}", e.getMessage());
+            logger.warn("Error saving UUID to disk: " + e.getMessage());
         }
     }
 
@@ -82,7 +82,7 @@ public class UuidNameCache implements IUuidNameCache {
             }
         } catch (Exception e) {
             // 文件损坏或读取失败
-            logger.warn("Error loading UUID from disk: {}", e.getMessage());
+            logger.warn("Error loading UUID from disk: " + e.getMessage());
         }
         return Optional.empty();
     }

@@ -1,5 +1,7 @@
 package com.springwater.easybot.statistic;
 
+import com.springwater.easybot.statistic.logger.DefaultLoggerAdapter;
+import com.springwater.easybot.statistic.logger.ILogger;
 import lombok.Getter;
 import lombok.Setter;
 import com.springwater.easybot.statistic.api.IPlayerStat;
@@ -17,6 +19,10 @@ public class StatisticManager implements IStatisticManager {
     private IUuidNameCache statDb;
     @Setter
     private Path savePath = Paths.get("stats");
+    @Setter
+    @Getter
+    private ILogger logger = new DefaultLoggerAdapter();
+    
     public void initDb(String savePath){
         statDb = new UuidNameCache(savePath);
     }
