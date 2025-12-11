@@ -3,7 +3,7 @@ plugins {
     id 'java-library'
 }
 
-group = 'org.easybot.statistic'
+group = 'org.easybot'
 version = '1.0-SNAPSHOT'
 
 repositories {
