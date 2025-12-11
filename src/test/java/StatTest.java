@@ -1,5 +1,5 @@
-import org.easybot.statistic.StatisticManager;
-import org.easybot.statistic.api.IPlayerStat;
+import com.springwater.easybot.statistic.StatisticManager;
+import com.springwater.easybot.statistic.api.IPlayerStat;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

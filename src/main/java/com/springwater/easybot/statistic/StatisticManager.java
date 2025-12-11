@@ -1,11 +1,11 @@
-package org.easybot.statistic;
+package com.springwater.easybot.statistic;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.easybot.statistic.api.IPlayerStat;
-import org.easybot.statistic.api.IUuidNameCache;
-import org.easybot.statistic.api.IStatisticManager;
-import org.easybot.statistic.cache.UuidNameCache;
+import com.springwater.easybot.statistic.api.IPlayerStat;
+import com.springwater.easybot.statistic.api.IUuidNameCache;
+import com.springwater.easybot.statistic.api.IStatisticManager;
+import com.springwater.easybot.statistic.cache.UuidNameCache;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

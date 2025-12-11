@@ -1,4 +1,4 @@
-package org.easybot.statistic;
+package com.springwater.easybot.statistic;
 
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package org.easybot.statistic.utils;
+package com.springwater.easybot.statistic.utils;
 
 /**
  * 字符串格式转换工具类

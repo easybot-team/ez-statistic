@@ -1,4 +1,4 @@
-package org.easybot.statistic.utils;
+package com.springwater.easybot.statistic.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

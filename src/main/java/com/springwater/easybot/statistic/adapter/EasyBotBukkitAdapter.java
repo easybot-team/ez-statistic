@@ -1,4 +1,4 @@
-package org.easybot.statistic.adapter;
+package com.springwater.easybot.statistic.adapter;
 
 public class EasyBotBukkitAdapter {
     public static String convert(String data) {

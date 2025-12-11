@@ -1,6 +1,6 @@
-import org.easybot.statistic.utils.StringFormatUtils;
+import com.springwater.easybot.statistic.utils.StringFormatUtils;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

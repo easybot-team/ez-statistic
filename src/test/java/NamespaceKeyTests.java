@@ -1,4 +1,4 @@
-import org.easybot.statistic.NamespaceKey;
+import com.springwater.easybot.statistic.NamespaceKey;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

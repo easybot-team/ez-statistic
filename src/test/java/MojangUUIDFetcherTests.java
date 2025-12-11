@@ -1,4 +1,4 @@
-import org.easybot.statistic.utils.MojangUUIDFetcher;
+import com.springwater.easybot.statistic.utils.MojangUUIDFetcher;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

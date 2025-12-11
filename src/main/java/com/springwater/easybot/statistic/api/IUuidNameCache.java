@@ -1,4 +1,4 @@
-package org.easybot.statistic.api;
+package com.springwater.easybot.statistic.api;
 
 import java.util.Optional;
 import java.util.UUID;

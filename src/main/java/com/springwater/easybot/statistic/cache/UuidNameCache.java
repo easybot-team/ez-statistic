@@ -1,7 +1,7 @@
-package org.easybot.statistic.cache;
+package com.springwater.easybot.statistic.cache;
 
 import lombok.Getter;
-import org.easybot.statistic.api.IUuidNameCache;
+import com.springwater.easybot.statistic.api.IUuidNameCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

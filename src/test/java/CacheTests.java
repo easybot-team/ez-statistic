@@ -1,4 +1,4 @@
-import org.easybot.statistic.StatisticManager;
+import com.springwater.easybot.statistic.StatisticManager;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import java.util.UUID;

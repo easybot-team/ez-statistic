@@ -1,13 +1,13 @@
-package org.easybot.statistic;
+package com.springwater.easybot.statistic;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
-import org.easybot.statistic.adapter.EasyBotBukkitAdapter;
-import org.easybot.statistic.api.IPlayerStat;
-import org.easybot.statistic.api.IUuidNameCache;
-import org.easybot.statistic.utils.MojangUUIDFetcher;
-import org.easybot.statistic.utils.StringFormatUtils;
+import com.springwater.easybot.statistic.adapter.EasyBotBukkitAdapter;
+import com.springwater.easybot.statistic.api.IPlayerStat;
+import com.springwater.easybot.statistic.api.IUuidNameCache;
+import com.springwater.easybot.statistic.utils.MojangUUIDFetcher;
+import com.springwater.easybot.statistic.utils.StringFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
