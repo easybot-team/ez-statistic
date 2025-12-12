@@ -46,7 +46,7 @@ public class PlayerStat implements IPlayerStat {
         String cachedUuidStr = cacheDb.getUuidCache(this.uuidOrName)
                 .orElse(EMPTY_UUID)
                 .toString();
-        if (tryLoadContext(Paths.get("cache", cachedUuidStr + ".json"))) {
+        if (tryLoadContext(this.statsDirectory.resolve(cachedUuidStr + ".json"))) {
             return;
         }
 
