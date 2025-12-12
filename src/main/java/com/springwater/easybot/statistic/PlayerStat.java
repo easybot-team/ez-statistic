@@ -10,6 +10,7 @@ import com.springwater.easybot.statistic.utils.MojangUUIDFetcher;
 import com.springwater.easybot.statistic.utils.StringFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,9 +36,18 @@ public class PlayerStat implements IPlayerStat {
         reloadData();
     }
 
+    public PlayerStat(String rawJson) {
+        statsDirectory = null;
+        context = JsonPath.parse(rawJson);
+        this.uuidOrName = EMPTY_UUID.toString();
+        filePath = null;
+    }
+
     private static final UUID EMPTY_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
     public void reloadData() {
+        if (this.statsDirectory == null) return;
+
         // 尝试直接加载指定的文件路径
         if (tryLoadContext(Paths.get(this.filePath))) {
             return;
