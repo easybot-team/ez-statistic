@@ -25,7 +25,7 @@
 ```
 
 **EzStatistic 就是为了终结这个头疼的问题而生的。**
-你不需要关心版本差异，也不用自己做字段映射。我们在内部实现了一套简单的匹配机制：优先尝试匹配`新版 JsonPath`，如果失败，自动回退并转换格式（例如获取损坏物品次数时把 `$.stats['minecraft:broken']['minecraft:wooden_pickaxe']` 自动转译为旧版的 `$['stat.breakItem.minecraft.wooden_pickaxe']`）去匹配旧数据。
+你不需要关心版本差异，也不用自己做字段映射。我们在内部实现了一套简单的匹配机制：优先尝试匹配`新版 JsonPath`，如果失败，自动回退并转换格式（例如获取损坏物品次数时把 `$.stats['minecraft:broken']['minecraft:wooden_pickaxe']` 自动转译为旧版的 `$['stat.breakItem.minecraft.wooden.pickaxe']`）去匹配旧数据、`play_time`和`play_one_minute`的转换。
 
 简而言之：**你只管查，兼容的问题交给我们。**
 

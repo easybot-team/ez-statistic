@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class StatTest {
     @BeforeAll
@@ -16,6 +17,20 @@ public class StatTest {
     IPlayerStat stat1122 = StatisticManager.getInstance().getPlayerStat("2b963020-1b94-49d0-8a34-9344066fc371");
     IPlayerStat stat121 = StatisticManager.getInstance().getPlayerStat("573016f4-21b4-428b-8606-24c5d700ac1b");
 
+    @Test
+    public void doPlayTimeNewKeyTest(){
+        assertNotEquals("0", stat189.getCustom("minecraft:play_time").orElse("0"));
+        assertNotEquals("0", stat1122.getCustom("play_time").orElse("0"));
+        assertNotEquals("0", stat121.getCustom("minecraft:play_time").orElse("0"));
+    }
+    
+    @Test
+    public void doPlayTimeOldKeyTest(){
+        assertNotEquals("0", stat189.getCustom("play_oneMinute").orElse("0"));
+        assertNotEquals("0", stat1122.getCustom("playOne_minute").orElse("0"));
+        assertNotEquals("0", stat121.getCustom("playOne_minute").orElse("0"));
+    }
+    
     @Test
     public void doEntityKilledTests() {
         assertEquals("1", stat189.getEntityKilled("minecraft:rabbit").orElse("0"));

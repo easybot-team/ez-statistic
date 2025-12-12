@@ -10,7 +10,6 @@ import com.springwater.easybot.statistic.utils.MojangUUIDFetcher;
 import com.springwater.easybot.statistic.utils.StringFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,8 +17,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class PlayerStat implements IPlayerStat {
     private String uuidOrName;
@@ -28,6 +29,16 @@ public class PlayerStat implements IPlayerStat {
     private DocumentContext context;
     private final Logger logger = LoggerFactory.getLogger(PlayerStat.class);
     private final IUuidNameCache cacheDb = StatisticManager.getInstance().getStatDb();
+
+    private static final Map<String, String> OLD_CUSTOM_MAPPING = Map.of(
+            "play_time", "play_one_minute"
+    );
+
+    private static final Map<String, String> NEW_CUSTOM_MAPPING = OLD_CUSTOM_MAPPING
+            .entrySet()
+            .stream()
+            .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+
 
     public PlayerStat(String uuidOrName, Path statsDirectory) {
         this.uuidOrName = uuidOrName;
@@ -142,8 +153,18 @@ public class PlayerStat implements IPlayerStat {
     public Optional<String> getCustom(String name) {
         NamespaceKey nk = new NamespaceKey(name);
         String category = "minecraft:custom";
-        String keyName = nk.getNamespace() + ":" + StringFormatUtils.camelToSnake(nk.getPath());
-        String oldPath = "$['stat." + StringFormatUtils.snakeToCamel(nk.getPath()) + "']";
+        
+        String newKeyName = NEW_CUSTOM_MAPPING.getOrDefault(
+                StringFormatUtils.camelToSnake(nk.getPath()).toLowerCase(),
+                StringFormatUtils.camelToSnake(nk.getPath())
+        );
+        String keyName = nk.getNamespace() + ":" + StringFormatUtils.camelToSnake(newKeyName);
+        
+        String oldKeyName = OLD_CUSTOM_MAPPING.getOrDefault(
+                nk.getPath().toLowerCase(),
+                nk.getPath()
+        );
+        String oldPath = "$['stat." + StringFormatUtils.snakeToCamel(oldKeyName) + "']";
 
         return get(category, keyName, oldPath);
     }
