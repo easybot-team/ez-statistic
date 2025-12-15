@@ -1,11 +1,11 @@
 package com.springwater.easybot.statistic;
 
-import lombok.Getter;
-import lombok.Setter;
 import com.springwater.easybot.statistic.api.IPlayerStat;
 import com.springwater.easybot.statistic.api.IUuidNameCache;
 import com.springwater.easybot.statistic.api.IStatisticManager;
 import com.springwater.easybot.statistic.cache.UuidNameCache;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,6 +24,12 @@ public class StatisticManager implements IStatisticManager {
     private final Map<String, CacheEntry> cache = new ConcurrentHashMap<>();
     private static final long EXPIRE_DURATION_MS = 10_000L;
 
+    private final ExecutorService fileIoExecutor = Executors.newFixedThreadPool(4, r -> {
+        Thread t = new Thread(r, "player-stat-loader");
+        t.setDaemon(true);
+        return t;
+    });
+
     private StatisticManager() {
         ScheduledExecutorService cleanupExecutor = Executors.newSingleThreadScheduledExecutor(r -> {
             Thread t = new Thread(r, "StatCache-Cleaner");
@@ -37,16 +43,18 @@ public class StatisticManager implements IStatisticManager {
         statDb = new UuidNameCache(savePath);
     }
 
-    /**
-     * 获取玩家统计数据（带滑动窗口缓存）
-     */
+    @Override
     public IPlayerStat getPlayerStat(String uuidOrName) {
-        CacheEntry entry = cache.computeIfAbsent(uuidOrName, k ->
-                new CacheEntry(new PlayerStat(k, savePath))
-        );
-        // 刷新最后访问时间（滑动窗口
+        CacheEntry entry = cache.computeIfAbsent(uuidOrName, k -> new CacheEntry(k, savePath, fileIoExecutor));
         entry.refreshAccessTime();
-        return entry.getStat();
+
+        try {
+            return entry.getStatBlocking();
+        } catch (InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
+            cache.remove(uuidOrName, entry); // 加载失败，从缓存中移除
+            throw new RuntimeException("Failed to load player stat for " + uuidOrName, e.getCause());
+        }
     }
 
     @Override
@@ -54,28 +62,35 @@ public class StatisticManager implements IStatisticManager {
         return new PlayerStat(rawJson);
     }
 
-    /**
-     * 清理过期缓存的任务
-     */
     private void cleanupExpiredEntries() {
         long now = System.currentTimeMillis();
-        cache.entrySet().removeIf(entry -> (now - entry.getValue().getLastAccessTime()) > EXPIRE_DURATION_MS);
+        cache.entrySet().removeIf(entry -> {
+            boolean expired = (now - entry.getValue().getLastAccessTime()) > EXPIRE_DURATION_MS;
+            if (expired && entry.getValue().futureStat.isDone()) {
+                // 只有当任务完成且已过期时才移除
+                return true;
+            }
+            // 如果任务还没完成，即使时间到了也不移除
+            return false;
+        });
     }
 
-    /**
-     * Stat的缓存
-     */
     @Getter
     private static class CacheEntry {
-        private final IPlayerStat stat;
+        private final CompletableFuture<IPlayerStat> futureStat;
         private volatile long lastAccessTime;
-        public CacheEntry(IPlayerStat stat) {
-            this.stat = stat;
+
+        public CacheEntry(String uuidOrName, Path savePath, ExecutorService executor) {
+            this.futureStat = CompletableFuture.supplyAsync(() -> new PlayerStat(uuidOrName, savePath), executor);
             this.lastAccessTime = System.currentTimeMillis();
         }
+
         public void refreshAccessTime() {
             this.lastAccessTime = System.currentTimeMillis();
         }
 
+        public IPlayerStat getStatBlocking() throws InterruptedException, ExecutionException {
+            return futureStat.get();
+        }
     }
 }
